@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Accounts.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class AccountsController : Controller
     {
         private readonly IDocumentSession session;
@@ -41,7 +41,7 @@ namespace Accounts.API.Controllers
             return StatusCode(201); //return the route you dingus.
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Delete.Request request)
         {
             var account = await session
@@ -111,6 +111,63 @@ namespace Accounts.API.Controllers
             await session.SaveChangesAsync(token).ConfigureAwait(false);
 
             return Ok();
+        }
+
+        [HttpPost("{id:guid}/debits")]
+        public async Task<IActionResult> PostDebit(Debit.Request request)
+        {
+            if (request.Model == null)
+            {
+                return BadRequest("Invalid body.");
+            }
+
+            var result = await session
+                .Query<Account>()
+                .Where(p => p.Id == request.Id)
+                .Where(p => p.Deleted != true)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            if(result.State == "Frozen")
+            {
+                return BadRequest("Account is frozen.");
+            }
+
+            session.Events.Append(request.Id, new AccountDebited(request.CorrelationId, request.Model.Amount));
+            await session.SaveChangesAsync(new CancellationToken()).ConfigureAwait(false);
+
+            return StatusCode(201); //return the route you dingus.
+        }
+
+        [HttpPost("{id:guid}/credits")]
+        public async Task<IActionResult> PostCredit(Credit.Request request)
+        {
+            if (request.Model == null)
+            {
+                return BadRequest("Invalid body.");
+            }
+
+            var result = await session
+                .Query<Account>()
+                .Where(p => p.Id == request.Id)
+                .Where(p => p.Deleted != true)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            session.Events.Append(request.Id, new AccountCredited(request.CorrelationId, request.Model.Amount));
+            await session.SaveChangesAsync(new CancellationToken()).ConfigureAwait(false);
+
+            return StatusCode(201); //return the route you dingus.
         }
     }
 }

@@ -39,5 +39,25 @@ namespace Accounts.API.Features.Accounts.Aggregate
         {
             @event.Patch.ApplyTo(this);
         }
+
+        public void Apply(AccountDebited @event)
+        {
+            if(@event.Amount > Balance && State == "Open")
+            {
+                State = "Frozen";
+            }
+
+            Balance -= @event.Amount;
+        }
+
+        public void Apply(AccountCredited @event)
+        {
+            Balance += @event.Amount;
+
+            if (Balance > 0 && State == "Frozen")
+            {
+                State = "Open";
+            }
+        }
     }
 }

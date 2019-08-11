@@ -7,5 +7,14 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountDebited
     {
+
+        public Guid Id { get; }
+        public decimal Amount { get; }
+
+        public AccountDebited(Guid id, decimal amount)
+        {
+            Id = id;
+            Amount = amount;
+        }
     }
 }
