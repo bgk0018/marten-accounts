@@ -11,10 +11,10 @@ namespace Accounts.API.Features.Accounts
         public class Request
         {
             [FromRoute(Name = "id")]
-            public Guid Id { get; }
+            public Guid Id { get; set;  }
 
             [FromHeader(Name = "X-Correlation-ID")]
-            public Guid CorrelationId { get; }
+            public Guid CorrelationId { get; set; }
         }
     }
 }

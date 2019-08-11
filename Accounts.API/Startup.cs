@@ -65,7 +65,8 @@ namespace Accounts.API
             app.UseGlobalExceptionHandler(config =>
             {
                 config.ContentType = "application/json";
-                config.ResponseBody(s => JsonConvert.SerializeObject(s));
+                config.ResponseBody(s => 
+                    JsonConvert.SerializeObject(new { s.Message }));
             });
 
             app.UseHttpsRedirection();

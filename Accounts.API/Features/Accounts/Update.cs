@@ -13,13 +13,13 @@ namespace Accounts.API.Features.Accounts
         public sealed class Request
         {
             [FromBody]
-            public JsonPatchDocument<Account> JsonPatchDocument { get; }
+            public JsonPatchDocument<Account> JsonPatchDocument { get; set; }
 
             [FromRoute(Name = "id")]
-            public Guid Id { get; }
+            public Guid Id { get; set; }
 
             [FromHeader(Name = "X-Correlation-ID")]
-            public Guid CorrelationId { get; }
+            public Guid CorrelationId { get; set; }
         }
     }
 }

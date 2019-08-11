@@ -24,7 +24,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 
         public void Apply(AccountCreated @event)
         {
-            Id = @event.Id;
+            Id = @event.AccountId;
             Type = @event.Type;
             State = "Open";
             Balance = @event.Balance;

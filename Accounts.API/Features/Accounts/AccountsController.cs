@@ -46,7 +46,7 @@ namespace Accounts.API.Controllers
         {
             var account = await session
                     .Query<Account>()
-                    .Where(p => !p.Deleted)
+                    .Where(p => p.Deleted != true)
                     .Where(p => p.Id == request.Id)
                     .FirstOrDefaultAsync()
                     .ConfigureAwait(false);
@@ -97,11 +97,14 @@ namespace Accounts.API.Controllers
         {
             var token = new CancellationToken();
 
-            var cube = await session.Events
-                    .AggregateStreamAsync<Account>(request.Id, token: token)
-                    .ConfigureAwait(false);
+            var cube = await session
+                .Query<Account>()
+                .Where(p=>p.Id == request.Id)
+                .Where(p => p.Deleted != true)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
-            if (cube?.Deleted != false)
+            if (cube == null)
                 return NotFound();
 
             session.Events.Append(request.Id, new AccountUpdated(request.CorrelationId, request.JsonPatchDocument));
