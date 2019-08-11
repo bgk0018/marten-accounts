@@ -21,5 +21,23 @@ namespace Accounts.API.Features.Accounts.Aggregate
         {
             //Required for serialization in marten
         }
+
+        public void Apply(AccountCreated @event)
+        {
+            Id = @event.Id;
+            Type = @event.Type;
+            State = "Open";
+            Balance = @event.Balance;
+        }
+
+        public void Apply(AccountDeleted @event)
+        {
+            Deleted = true;
+        }
+
+        public void Apply(AccountUpdated @event)
+        {
+            @event.Patch.ApplyTo(this);
+        }
     }
 }

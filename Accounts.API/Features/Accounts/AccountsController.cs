@@ -65,7 +65,8 @@ namespace Accounts.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await session.Query<Account>().Where(p=>p.Deleted != true).ToListAsync().ConfigureAwait(false));
+            var result = await session.Query<Account>().Where(p => p.Deleted != true).ToListAsync().ConfigureAwait(false);
+            return Ok(result);
         }
 
         [HttpGet("{id:guid}")]
