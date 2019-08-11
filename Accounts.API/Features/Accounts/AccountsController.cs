@@ -178,15 +178,17 @@ namespace Accounts.API.Controllers
                 return BadRequest("Invalid body.");
             }
 
+            var debitCollection = await session.Events.QueryRawEventDataOnly<AccountDebited>().ToListAsync();
+
             //Dive directly into the event stream, typically shouldn't do this though
-            var @event = await session.Events.LoadAsync<AccountDebited>(request.Model.Target);
+            var debit = debitCollection.Where(p => p.Id == request.Model.Target).FirstOrDefault();
             
-            if (@event == null)
+            if (debit == null)
             {
                 return NotFound();
             }
 
-            if(request.Model.Amount > @event.Data.Amount)
+            if(request.Model.Amount > debit.Amount)
             {
                 return BadRequest("Refund amount was greater than target debit amount.");
             }

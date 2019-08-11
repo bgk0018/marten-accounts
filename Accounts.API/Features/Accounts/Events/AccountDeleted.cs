@@ -7,7 +7,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountDeleted
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
 
         public AccountDeleted(Guid id)
         {

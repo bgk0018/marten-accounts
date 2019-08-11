@@ -7,7 +7,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountRefunded
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public Guid Target { get; }
         public decimal Amount { get; }
 

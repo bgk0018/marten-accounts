@@ -8,7 +8,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountUpdated
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public JsonPatchDocument<Account> Patch { get; }
 
         public AccountUpdated(Guid id, JsonPatchDocument<Account> patch)

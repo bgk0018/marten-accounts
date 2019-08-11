@@ -7,7 +7,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountCredited
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
         public decimal Amount { get; }
         public string Description { get; }
 

@@ -7,7 +7,7 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountCreated
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; }
 
         public string Type { get; }
 
