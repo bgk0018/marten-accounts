@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Accounts.API.Controllers
 {
-    [Route("[controller]")]
+    [Route("accounts")]
     public class AccountsController : Controller
     {
         private readonly IDocumentSession session;
