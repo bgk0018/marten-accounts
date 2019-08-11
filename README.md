@@ -4,6 +4,7 @@ This is a toy API for understanding how you can pull together Marten as an Event
 Some of the things touched on are:
 
 * Fetching Streams (Refund)
+* Aggregates (Account)
 * Live Projections (AccountTransactions)
 * Inline Projections (Account)
 * Daemon/Async Projections (?)
@@ -23,3 +24,12 @@ On Creation:
 
 
 * Marten can also be used as just a flat document store
+
+## Libraries
+
+A few libraries were used for sanity reasons:
+
+* Opinionated/Required CorrselationId: CorrelationIdMiddleware (Depends on FluentValidation)
+* Easy Global Exception Handling: GlobalExceptionHandler
+* Feature Folders: OdeToCode.AddFeatureFolders
+* Documentation: Swashbuckle.AspNetCore
