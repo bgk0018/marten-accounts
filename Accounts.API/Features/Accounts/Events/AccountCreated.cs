@@ -7,18 +7,15 @@ namespace Accounts.API.Features.Accounts.Aggregate
 {
     public class AccountCreated
     {
-        public Guid Id { get; }
-
-        public Guid AccountId { get; }
+        public Guid Id { get; set; }
 
         public string Type { get; }
 
         public decimal Balance { get; }
 
-        public AccountCreated(Guid id, Guid accountId, string type, decimal balance)
+        public AccountCreated(Guid id, string type, decimal balance)
         {
             Id = id;
-            AccountId = accountId;
             Type = type;
             Balance = balance;
         }

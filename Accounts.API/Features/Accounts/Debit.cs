@@ -23,6 +23,8 @@ namespace Accounts.API.Features.Accounts
         public class Model
         {
             public decimal Amount { get; set; }
+
+            public string Description { get; set; }
         }
     }
 }

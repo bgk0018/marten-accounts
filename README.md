@@ -1,3 +1,15 @@
+# Marten Event Sourcing HTTP API
+This is a toy API for understanding how you can pull together Marten as an Event Store within a .NET Core API. This emulates the ability of a bank accounting system.
+
+Some of the things touched on are:
+
+* Fetching Streams (Refund)
+* Live Projections (AccountTransactions)
+* Inline Projections (Account)
+* Daemon/Async Projections (?)
+
+## Accounts
+
 Events
 * Events come in many flavors that can be pushed onto a stream
 * Events pushed onto a stream are responsible for modeling the state of the stream

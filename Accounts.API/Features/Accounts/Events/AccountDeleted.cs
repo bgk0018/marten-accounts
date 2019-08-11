@@ -5,15 +5,13 @@ using System.Threading.Tasks;
 
 namespace Accounts.API.Features.Accounts.Aggregate
 {
-    public class AccountCredited
+    public class AccountDeleted
     {
-        public Guid Id { get; }
-        public decimal Amount { get; }
+        public Guid Id { get; set; }
 
-        public AccountCredited(Guid id, decimal amount)
+        public AccountDeleted(Guid id)
         {
             Id = id;
-            Amount = amount;
         }
     }
 }

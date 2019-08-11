@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Accounts.API.Features.Accounts;
 using Accounts.API.Features.Accounts.Aggregate;
+using Accounts.API.Features.Accounts.Projections;
 using Marten;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,6 @@ namespace Accounts.API.Controllers
 
             var @event = new AccountCreated(
                 request.CorrelationId, 
-                request.Model.Id, 
                 request.Model.Type, 
                 request.Model.Balance);
 
@@ -138,7 +138,7 @@ namespace Accounts.API.Controllers
                 return BadRequest("Account is frozen.");
             }
 
-            session.Events.Append(request.Id, new AccountDebited(request.CorrelationId, request.Model.Amount));
+            session.Events.Append(request.Id, new AccountDebited(request.CorrelationId, request.Model.Amount, request.Model.Description));
             await session.SaveChangesAsync(new CancellationToken()).ConfigureAwait(false);
 
             return StatusCode(201); //return the route you dingus.
@@ -164,10 +164,45 @@ namespace Accounts.API.Controllers
                 return NotFound();
             }
 
-            session.Events.Append(request.Id, new AccountCredited(request.CorrelationId, request.Model.Amount));
+            session.Events.Append(request.Id, new AccountCredited(request.CorrelationId, request.Model.Amount, request.Model.Description));
             await session.SaveChangesAsync(new CancellationToken()).ConfigureAwait(false);
 
             return StatusCode(201); //return the route you dingus.
+        }
+
+        [HttpPost("{id:guid}/refunds")]
+        public async Task<IActionResult> PostRefund(Refund.Request request)
+        {
+            if (request.Model == null)
+            {
+                return BadRequest("Invalid body.");
+            }
+
+            //Dive directly into the event stream, typically shouldn't do this though
+            var @event = await session.Events.LoadAsync<AccountDebited>(request.Model.Target);
+            
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            if(request.Model.Amount > @event.Data.Amount)
+            {
+                return BadRequest("Refund amount was greater than target debit amount.");
+            }
+
+            session.Events.Append(request.Id, new AccountRefunded(request.CorrelationId, request.Model.Target, request.Model.Amount));
+            await session.SaveChangesAsync(new CancellationToken()).ConfigureAwait(false);
+
+            return StatusCode(201); //return the route you dingus.
+        }
+
+        [HttpGet("{id:guid}/transactions")]
+        public async Task<IActionResult> GetTransactionHistory(Guid id)
+        {
+            var result = await session.Events.AggregateStreamAsync<AccountTransactions>(id); //Live projection, processes all events at request time
+
+            return Ok(result);
         }
     }
 }

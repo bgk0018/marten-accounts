@@ -24,7 +24,6 @@ namespace Accounts.API.Features.Accounts.Aggregate
 
         public void Apply(AccountCreated @event)
         {
-            Id = @event.AccountId;
             Type = @event.Type;
             State = "Open";
             Balance = @event.Balance;
@@ -51,6 +50,16 @@ namespace Accounts.API.Features.Accounts.Aggregate
         }
 
         public void Apply(AccountCredited @event)
+        {
+            Balance += @event.Amount;
+
+            if (Balance > 0 && State == "Frozen")
+            {
+                State = "Open";
+            }
+        }
+
+        public void Apply(AccountRefunded @event)
         {
             Balance += @event.Amount;
 

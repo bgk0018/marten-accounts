@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Accounts.API.Features.Accounts
 {
-    public static class Credit
+    public static class Refund
     {
         public class Request
         {
@@ -24,7 +24,7 @@ namespace Accounts.API.Features.Accounts
         {
             public decimal Amount { get; set; }
 
-            public string Description { get; set; }
+            public Guid Target { get; set; }
         }
     }
 }
