@@ -1,0 +1,50 @@
+version: '3.4'
+
+services:
+  accounts.api:
+    image: ${DOCKER_REGISTRY-}accountsapi
+    build:
+      context: .
+      dockerfile: Accounts.API/Dockerfile
+    container_name: "accounts.api_container"
+    networks:
+      - postgres
+
+  #database
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeme
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+  
+  #database admin
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "foo"
+      PGADMIN_DEFAULT_PASSWORD: "bar"
+    volumes:
+       - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
